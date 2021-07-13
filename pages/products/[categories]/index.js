@@ -1,13 +1,16 @@
 import React, { Fragment } from 'react';
-import Layout from '../../../components/layout';
-import { DEFAULT_SEO, getSeoData } from '../../../utils';
-import { URL } from '../../api/hello';
+import Layout from '../../../src/components/layout';
+import { DEFAULT_SEO, getSeoData } from '../../../src/utils';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Caterories({ SEO, data }) {
+    const router = useRouter();
+    const currentPath = router.query.categories;
+
     return (
         <div className="container">
             <Fragment>
-                AAA
                 <Layout seoData={SEO}>
                     {data?.length > 0 && (
                         <Fragment>
@@ -23,7 +26,14 @@ export default function Caterories({ SEO, data }) {
                                 <tbody>
                                     {data.map(data => (
                                         <tr key={data.id}>
-                                            <td>{data.title}</td>
+                                            <Link
+                                                passHref
+                                                href={`/products/${currentPath}/${data.slug}`}
+                                            >
+                                                <a>
+                                                    <td>{data.title}</td>
+                                                </a>
+                                            </Link>
                                             <td>{data.price}</td>
                                             <td>{data.description}</td>
                                         </tr>
@@ -39,9 +49,10 @@ export default function Caterories({ SEO, data }) {
 }
 
 export async function getStaticPaths() {
-    const getCategories = await fetch(`${URL}/categories`);
+    const getCategories = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/categories`
+    );
     const categories = await getCategories.json();
-
     const paths = categories.map(category => ({
         params: { categories: category.slug },
     }));
@@ -53,8 +64,11 @@ export async function getStaticPaths() {
     };
 }
 
-export async function getStaticProps({ params: { categories } }) {
-    const resp = await fetch(`${URL}/categories/${categories}`);
+export async function getStaticProps({ params }) {
+    console.log(params);
+    const resp = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/categories/${params.categories}`
+    );
     const category = await resp.json();
     const data = category.products;
     // console.log(data.products);

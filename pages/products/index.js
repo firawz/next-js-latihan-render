@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { URL } from '../api/hello';
-import Layout from '../../components/layout';
-import { getSeoData } from '../../utils';
+import Layout from '../../src/components/layout';
+import { getSeoData } from '../../src/utils';
 import Link from 'next/link';
 
 export default function Products({ data, SEO }) {
@@ -53,7 +53,7 @@ export default function Products({ data, SEO }) {
 }
 
 export async function getStaticProps() {
-    const resp = await fetch(`${URL}/products`);
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`);
     const data = await resp.json();
     const SEO = await getSeoData({ id: 1 });
     return { props: { data, SEO } };
