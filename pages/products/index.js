@@ -5,7 +5,6 @@ import { getSeoData } from '../../src/utils';
 import Link from 'next/link';
 
 export default function Products({ data, SEO }) {
-    // aaaaaaaaaaaa
     return (
         <div className="container">
             <Fragment>
